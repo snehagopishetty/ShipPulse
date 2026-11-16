@@ -22,9 +22,6 @@ from sklearn.metrics import (
     classification_report
 )
 
-# ==========================================
-# 1. CONFIGURATION
-# ==========================================
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
@@ -39,10 +36,6 @@ print("\n========== SHIPPULSE AI ==========")
 print("DELAY THRESHOLD OPTIMIZATION")
 print("==================================\n")
 
-
-# ==========================================
-# 2. LOAD DATA
-# ==========================================
 
 df = pd.read_csv(DATA_PATH)
 
@@ -85,10 +78,6 @@ X = df[feature_columns]
 y = df["Is_Delayed"].astype(int)
 
 
-# ==========================================
-# 3. CHRONOLOGICAL TRAIN / VALIDATION / TEST
-# ==========================================
-
 n = len(df)
 
 train_end = int(n * 0.70)
@@ -122,9 +111,6 @@ print(
 )
 
 
-# ==========================================
-# 4. PREPROCESSING
-# ==========================================
 
 preprocessor = ColumnTransformer(
     transformers=[
@@ -141,10 +127,6 @@ preprocessor = ColumnTransformer(
     ]
 )
 
-
-# ==========================================
-# 5. TRAIN CLASSIFIER
-# ==========================================
 
 model = Pipeline(
     steps=[
@@ -168,10 +150,6 @@ model.fit(X_train, y_train)
 print("\nClassifier training completed.")
 
 
-# ==========================================
-# 6. SELECT THRESHOLD ON VALIDATION DATA
-# ==========================================
-
 validation_probabilities = model.predict_proba(
     X_validation
 )[:, 1]
@@ -183,8 +161,6 @@ precision, recall, thresholds = (
     )
 )
 
-# precision and recall contain one extra
-# endpoint compared with thresholds.
 
 threshold_results = []
 
@@ -214,10 +190,6 @@ threshold_df.to_csv(
     index=False
 )
 
-# Business objective:
-# First try to achieve recall >= 75%.
-# Among qualifying thresholds, choose the one
-# with the highest precision.
 
 eligible = threshold_df[
     threshold_df["Recall"] >= 0.75
@@ -237,8 +209,6 @@ if not eligible.empty:
 
 else:
 
-    # If 75% recall cannot be achieved,
-    # select the threshold with the highest F2.
     best_row = threshold_df.loc[
         threshold_df["F2"].idxmax()
     ]
@@ -257,10 +227,6 @@ print("Validation recall:", round(best_row["Recall"], 4))
 print("Validation F1:", round(best_row["F1"], 4))
 print("Selection reason:", selection_reason)
 
-
-# ==========================================
-# 7. FINAL EVALUATION ON UNSEEN TEST DATA
-# ==========================================
 
 test_probabilities = model.predict_proba(
     X_test
@@ -315,10 +281,6 @@ print(
     )
 )
 
-
-# ==========================================
-# 8. SAVE RESULTS AND MODEL
-# ==========================================
 
 pd.DataFrame([test_metrics]).to_csv(
     REPORT_DIR / "optimized_delay_model_metrics.csv",

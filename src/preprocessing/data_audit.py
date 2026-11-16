@@ -3,17 +3,13 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 
-# ---------------------------------
-# 1. Dataset Configuration
-# ---------------------------------
+
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
 DATA_PATH = BASE_DIR / "data" / "raw" / "DataCoSupplyChainDataset.csv"
 
-# ---------------------------------
-# 2. Load Dataset
-# ---------------------------------
+
 
 print("\n========== SHIPPULSE ==========")
 print("DATASET INSPECTION & QUALITY AUDIT")
@@ -23,9 +19,7 @@ df = pd.read_csv(DATA_PATH, encoding="latin1")
 
 print("Dataset loaded successfully!\n")
 
-# ---------------------------------
-# 3. Dataset Dimensions
-# ---------------------------------
+
 
 print("STEP 1: DATASET DIMENSIONS")
 
@@ -38,9 +32,7 @@ print(
     "MB"
 )
 
-# ---------------------------------
-# 4. Column Information
-# ---------------------------------
+
 
 print("\nSTEP 2: COLUMN INFORMATION\n")
 
@@ -63,9 +55,6 @@ column_info.to_csv(
     index=False
 )
 
-# ---------------------------------
-# 5. Missing Value Analysis
-# ---------------------------------
 
 print("\nSTEP 3: MISSING VALUE ANALYSIS\n")
 
@@ -90,9 +79,6 @@ missing_report.to_csv(
     report_dir / "missing_value_report.csv"
 )
 
-# ---------------------------------
-# 6. Duplicate Analysis
-# ---------------------------------
 
 print("\nSTEP 4: DUPLICATE ANALYSIS\n")
 
@@ -109,9 +95,7 @@ print("Unique Customers:", df["Customer Id"].nunique())
 
 print("Unique Products:", df["Product Card Id"].nunique())
 
-# ---------------------------------
-# 7. Date Range Analysis
-# ---------------------------------
+
 
 print("\nSTEP 5: DATE RANGE ANALYSIS\n")
 
@@ -132,9 +116,7 @@ for col in date_columns:
     print("Maximum:", dates.max())
     print("Invalid dates:", dates.isna().sum())
 
-# ---------------------------------
-# 8. Categorical Analysis
-# ---------------------------------
+
 
 print("\nSTEP 6: CATEGORICAL DISTRIBUTION\n")
 
@@ -152,9 +134,7 @@ for col in categorical_columns:
     print(f"\n--- {col} ---")
     print(df[col].value_counts(dropna=False))
 
-# ---------------------------------
-# 9. Order-Level Analysis
-# ---------------------------------
+
 
 print("\nSTEP 7: ORDER LEVEL ANALYSIS\n")
 
@@ -166,9 +146,6 @@ print("Average items per order:", round(order_counts.mean(), 2))
 
 print("Maximum items in an order:", order_counts.max())
 
-# ---------------------------------
-# 10. Completion
-# ---------------------------------
 
 print("\n==================================")
 print("INITIAL DATA AUDIT COMPLETED!")

@@ -9,7 +9,7 @@ REPORT_DIR = BASE_DIR / "reports"
 
 df = pd.read_csv(DATA_PATH, encoding="latin1")
 
-# Columns that should remain consistent within an order
+
 order_columns = [
     "Days for shipping (real)",
     "Days for shipment (scheduled)",
@@ -23,7 +23,6 @@ order_columns = [
     "Order Country"
 ]
 
-# Check consistency across order-item records
 consistency = (
     df.groupby("Order Id")[order_columns]
     .nunique(dropna=False)
@@ -44,7 +43,7 @@ inconsistent_orders.to_csv(
     REPORT_DIR / "inconsistent_orders.csv"
 )
 
-# Inspect delivery and order statuses
+
 print("\nDelivery Status Distribution:")
 print(df.groupby("Order Id")["Delivery Status"].first().value_counts())
 
@@ -63,7 +62,6 @@ status_comparison.to_csv(
     REPORT_DIR / "delivery_order_status_comparison.csv"
 )
 
-# Exact delay distribution at order level
 order_df = df.groupby("Order Id").agg(
     Actual_Days=("Days for shipping (real)", "first"),
     Scheduled_Days=("Days for shipment (scheduled)", "first"),
@@ -81,7 +79,7 @@ print(order_df["Delay_Hours"].value_counts().sort_index())
 print("\nDelay statistics:")
 print(order_df["Delay_Hours"].describe())
 
-# Calculate percentage-based shipping performance
+
 mode_analysis = pd.crosstab(
     order_df["Shipping_Mode"],
     order_df["Delay_Hours"].gt(0),

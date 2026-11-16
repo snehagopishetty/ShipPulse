@@ -32,9 +32,6 @@ from sklearn.metrics import (
     confusion_matrix
 )
 
-# ==========================================
-# 1. PROJECT CONFIGURATION
-# ==========================================
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
@@ -49,11 +46,6 @@ REPORT_DIR.mkdir(parents=True, exist_ok=True)
 print("\n========== SHIPPULSE AI ==========")
 print("ETA AND DELAY MODEL TRAINING")
 print("==================================\n")
-
-
-# ==========================================
-# 2. LOAD MODELLING DATASET
-# ==========================================
 
 if not DATA_PATH.exists():
     raise FileNotFoundError(
@@ -71,10 +63,6 @@ df = df.dropna(subset=["Order_Date"]).copy()
 
 print("Dataset loaded:", len(df), "orders")
 
-
-# ==========================================
-# 3. DEFINE FEATURES AND TARGETS
-# ==========================================
 
 categorical_features = [
     "Shipping_Mode",
@@ -136,14 +124,6 @@ assert not X.isnull().any().any(), (
 )
 
 
-# ==========================================
-# 4. CHRONOLOGICAL TRAIN-TEST SPLIT
-# ==========================================
-
-# Sort by order placement date.
-# Older orders are used for training.
-# Newer orders are reserved for testing.
-
 df = df.sort_values(
     "Order_Date"
 ).reset_index(drop=True)
@@ -194,16 +174,6 @@ if y_cls_train.nunique() < 2:
         "and non-delayed orders."
     )
 
-
-# ==========================================
-# 5. CREATE PREPROCESSING PIPELINE
-# ==========================================
-
-# Convert categorical columns into numerical
-# representations using one-hot encoding.
-#
-# Numerical features are passed through unchanged.
-
 def create_preprocessor():
 
     return ColumnTransformer(
@@ -223,10 +193,6 @@ def create_preprocessor():
         ]
     )
 
-
-# ==========================================
-# 6. REGRESSION MODEL - ETA PREDICTION
-# ==========================================
 
 print("\n========== ETA REGRESSION ==========")
 
@@ -310,9 +276,6 @@ print("\nRandom Forest Regression Results:")
 print(eta_metrics)
 
 
-# ==========================================
-# 7. CLASSIFICATION MODEL - DELAY PREDICTION
-# ==========================================
 
 print("\n========== DELAY CLASSIFICATION ==========")
 
@@ -435,10 +398,6 @@ print(
 )
 
 
-# ==========================================
-# 8. SAVE MODEL COMPARISON
-# ==========================================
-
 metrics_df = pd.DataFrame([
     {
         "Task": "ETA Regression",
@@ -470,10 +429,6 @@ metrics_df.to_csv(
 )
 
 
-# ==========================================
-# 9. SAVE TEST PREDICTIONS
-# ==========================================
-
 predictions_df = pd.DataFrame({
     "Order_Id": df["Order_Id"].iloc[split_index:].values,
     "Order_Date": df["Order_Date"].iloc[split_index:].values,
@@ -502,10 +457,6 @@ predictions_df.to_csv(
 )
 
 
-# ==========================================
-# 10. SAVE TRAINED MODELS
-# ==========================================
-
 joblib.dump(
     eta_model,
     MODEL_DIR / "eta_regression_model.joblib"
@@ -517,11 +468,6 @@ joblib.dump(
 )
 
 print("\nModels saved successfully.")
-
-
-# ==========================================
-# 11. FINAL SUMMARY
-# ==========================================
 
 print("\n========== TRAINING COMPLETED ==========")
 

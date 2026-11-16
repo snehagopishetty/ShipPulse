@@ -8,9 +8,6 @@ import matplotlib.pyplot as plt
 from pathlib import Path
 from datetime import timedelta
 
-# ==========================================
-# 1. PROJECT CONFIGURATION
-# ==========================================
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
@@ -30,14 +27,6 @@ print("\n========== SHIPPULSE AI ==========")
 print("DELAY PROPAGATION ENGINE")
 print("==================================\n")
 
-
-# ==========================================
-# 2. ASSUMED SHIPMENT STAGE CONFIGURATION
-# ==========================================
-
-# These are illustrative assumptions.
-# DataCo does not provide actual timestamps
-# or durations for these individual stages.
 
 STAGES = [
     {
@@ -73,14 +62,6 @@ assert np.isclose(
 ), "Stage duration shares must add up to 100%."
 
 
-# ==========================================
-# 3. DEFINE DISRUPTION SCENARIOS
-# ==========================================
-
-# Disruption values are additional hours introduced
-# at the corresponding stage.
-#
-# All values below are simulated, not observed.
 
 SCENARIOS = {
     "Baseline": {},
@@ -112,10 +93,6 @@ SCENARIOS = {
     }
 }
 
-
-# ==========================================
-# 4. LOAD DATA AND ETA MODEL
-# ==========================================
 
 if not DATA_PATH.exists():
     raise FileNotFoundError(
@@ -170,9 +147,6 @@ if missing_features:
         f"Missing model features: {missing_features}"
     )
 
-# Use the first record from the chronological
-# 20% ETA test window for a reproducible example.
-
 test_start = int(len(df) * 0.80)
 
 if test_start >= len(df):
@@ -186,7 +160,7 @@ predicted_eta_days = float(
     eta_model.predict(sample_features)[0]
 )
 
-# A duration cannot be negative.
+
 predicted_eta_days = max(
     0.0,
     predicted_eta_days
@@ -209,9 +183,6 @@ print(
 )
 
 
-# ==========================================
-# 5. CREATE STAGE SCHEDULE
-# ==========================================
 
 def create_stage_schedule(predicted_days):
     """
@@ -241,9 +212,6 @@ def create_stage_schedule(predicted_days):
     return pd.DataFrame(schedule)
 
 
-# ==========================================
-# 6. SIMULATE DELAY PROPAGATION
-# ==========================================
 
 def simulate_propagation(
     schedule,
@@ -291,8 +259,7 @@ def simulate_propagation(
             disruptions.get(stage_name, 0)
         )
 
-        # A downstream buffer absorbs some
-        # or all of the incoming upstream delay.
+        
 
         absorbed_delay = min(
             incoming_delay,
@@ -303,8 +270,7 @@ def simulate_propagation(
             incoming_delay - absorbed_delay
         )
 
-        # Local disruption is added after
-        # the stage's incoming delay is processed.
+       
 
         outgoing_delay = (
             residual_incoming_delay
@@ -342,9 +308,7 @@ def simulate_propagation(
     return pd.DataFrame(results)
 
 
-# ==========================================
-# 7. RUN ALL SCENARIOS
-# ==========================================
+
 
 schedule = create_stage_schedule(
     predicted_eta_days
@@ -399,9 +363,6 @@ summary_df = pd.DataFrame(
 )
 
 
-# ==========================================
-# 8. SAVE SIMULATION RESULTS
-# ==========================================
 
 stage_results_df.to_csv(
     REPORT_DIR / "stage_propagation_details.csv",
@@ -414,9 +375,6 @@ summary_df.to_csv(
 )
 
 
-# ==========================================
-# 9. DISPLAY SCENARIO COMPARISON
-# ==========================================
 
 print("\n========== SCENARIO COMPARISON ==========")
 
@@ -432,9 +390,7 @@ print(
 )
 
 
-# ==========================================
-# 10. DISPLAY STAGE-LEVEL EXPLANATION
-# ==========================================
+
 
 print("\n========== STAGE-LEVEL EXPLANATION ==========")
 
@@ -459,9 +415,7 @@ for scenario_name in SCENARIOS:
     )
 
 
-# ==========================================
-# 11. VISUALIZE SCENARIO IMPACT
-# ==========================================
+
 
 plot_df = summary_df[
     summary_df["Scenario"] != "Baseline"
@@ -494,9 +448,7 @@ plt.savefig(
 plt.close()
 
 
-# ==========================================
-# 12. VISUALIZE STAGE PROPAGATION
-# ==========================================
+
 
 selected_scenario = "Multiple Disruptions"
 
@@ -540,9 +492,6 @@ plt.savefig(
 plt.close()
 
 
-# ==========================================
-# 13. FINAL SUMMARY
-# ==========================================
 
 print("\n==================================")
 print("DELAY PROPAGATION COMPLETED")

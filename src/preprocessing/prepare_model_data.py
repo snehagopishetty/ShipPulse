@@ -3,9 +3,6 @@ import pandas as pd
 import numpy as np
 from pathlib import Path
 
-# ==========================================
-# 1. PROJECT CONFIGURATION
-# ==========================================
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
@@ -21,9 +18,7 @@ print("FEATURE ENGINEERING PIPELINE")
 print("==================================\n")
 
 
-# ==========================================
-# 2. LOAD ORDER-LEVEL DATA
-# ==========================================
+
 
 if not INPUT_PATH.exists():
     raise FileNotFoundError(
@@ -36,9 +31,6 @@ df = pd.read_csv(INPUT_PATH)
 print("Dataset loaded successfully!")
 print("Original orders:", len(df))
 
-# Rename source columns explicitly.
-# This avoids inconsistencies caused by replacing
-# spaces in some column names but not others.
 
 column_mapping = {
     "Order Id": "Order_Id",
@@ -85,9 +77,7 @@ if missing_columns:
 print("Column validation passed.")
 
 
-# ==========================================
-# 3. REMOVE CANCELLED SHIPMENTS
-# ==========================================
+
 
 original_count = len(df)
 
@@ -100,15 +90,6 @@ cancelled_count = original_count - len(df)
 print("\nCancelled orders excluded:", cancelled_count)
 print("Orders after cancellation filtering:", len(df))
 
-# Cancellation is a separate operational outcome.
-# These records are excluded from delivery-time
-# modelling because they do not represent a
-# completed shipment delivery.
-
-
-# ==========================================
-# 4. CONVERT DATE COLUMNS
-# ==========================================
 
 df["Order_Date"] = pd.to_datetime(
     df["Order_Date"],
@@ -126,9 +107,7 @@ df = df.dropna(
 print("Orders after date validation:", len(df))
 
 
-# ==========================================
-# 5. VALIDATE NUMERIC SOURCE COLUMNS
-# ==========================================
+
 
 numeric_columns = [
     "Scheduled_Days",
@@ -150,14 +129,12 @@ invalid_numeric_rows = df[
 
 print("Rows with invalid numeric values:", invalid_numeric_rows)
 
-# Do not silently impute actual delivery durations.
-# Invalid records are excluded and reported.
+
 
 df = df.dropna(
     subset=numeric_columns
 ).copy()
 
-# Check basic domain constraints.
 
 assert (df["Scheduled_Days"] >= 0).all(), (
     "Negative scheduled delivery duration found."
@@ -176,13 +153,7 @@ assert (df["Number_Of_Items"] > 0).all(), (
 )
 
 
-# ==========================================
-# 6. CREATE TEMPORAL FEATURES
-# ==========================================
 
-# Only use the order placement timestamp.
-# Shipping completion timestamps are unavailable
-# when an ETA prediction is initially requested.
 
 df["Order_Year"] = df["Order_Date"].dt.year
 
@@ -199,17 +170,9 @@ df["Is_Weekend"] = (
 ).astype(int)
 
 
-# ==========================================
-# 7. CREATE TARGET VARIABLES
-# ==========================================
-
-# Regression target: actual shipping duration.
-# This is the observed order-to-shipping-date
-# duration provided by the DataCo dataset.
 
 df["Actual_Delivery_Days"] = df["Actual_Days"]
 
-# Delay relative to scheduled shipping duration.
 
 df["Delay_Days"] = (
     df["Actual_Delivery_Days"]
@@ -218,16 +181,11 @@ df["Delay_Days"] = (
 
 df["Delay_Hours"] = df["Delay_Days"] * 24
 
-# Binary classification target.
 
 df["Is_Delayed"] = (
     df["Delay_Days"] > 0
 ).astype(int)
 
-
-# ==========================================
-# 8. SELECT PREDICTION FEATURES
-# ==========================================
 
 feature_columns = [
     "Shipping_Mode",
@@ -253,10 +211,6 @@ target_columns = [
     "Is_Delayed",
 ]
 
-# Keep order date for chronological train/test
-# splitting later, not as a raw ML input.
-#
-# Order_Id is used for traceability only.
 
 metadata_columns = [
     "Order_Id",
@@ -270,13 +224,7 @@ model_df = df[
 ].copy()
 
 
-# ==========================================
-# 9. DATA LEAKAGE VALIDATION
-# ==========================================
 
-# These columns contain outcomes or information
-# that would not be available when the order
-# is first placed.
 
 leakage_columns = {
     "Actual_Days",
@@ -301,9 +249,7 @@ assert not leaking_features, (
 print("\nTarget leakage check passed.")
 
 
-# ==========================================
-# 10. DATA QUALITY CHECKS
-# ==========================================
+
 
 print("\n========== DATA QUALITY CHECKS ==========")
 
@@ -363,22 +309,12 @@ assert model_df["Is_Delayed"].isin(
 print("All data quality checks passed.")
 
 
-# ==========================================
-# 11. SORT DATA CHRONOLOGICALLY
-# ==========================================
 
 model_df = model_df.sort_values(
     by=["Order_Date", "Order_Id"]
 ).reset_index(drop=True)
 
-# Chronological ordering allows a realistic
-# evaluation where older orders train the model
-# and newer orders test its generalization.
 
-
-# ==========================================
-# 12. SAVE MODELLING DATASET
-# ==========================================
 
 model_path = (
     OUTPUT_DIR / "modeling_dataset.csv"
@@ -391,10 +327,6 @@ model_df.to_csv(
 
 print("\nModelling dataset saved:", model_path)
 
-
-# ==========================================
-# 13. SAVE FEATURE DOCUMENTATION
-# ==========================================
 
 feature_descriptions = [
     "Selected shipping service at order placement",
@@ -447,9 +379,6 @@ feature_documentation.to_csv(
 print("Feature documentation saved.")
 
 
-# ==========================================
-# 14. SAVE DATA PREPARATION SUMMARY
-# ==========================================
 
 preparation_summary = pd.DataFrame([
     {
@@ -494,9 +423,6 @@ preparation_summary.to_csv(
 )
 
 
-# ==========================================
-# 15. GENERATE TARGET SUMMARY
-# ==========================================
 
 print("\n========== TARGET DISTRIBUTION ==========")
 
@@ -536,10 +462,6 @@ print(
     model_df["Order_Date"].max()
 )
 
-
-# ==========================================
-# 16. FINAL SUMMARY
-# ==========================================
 
 print("\n==================================")
 print("FEATURE ENGINEERING COMPLETED")

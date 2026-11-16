@@ -2,10 +2,6 @@
 import pandas as pd
 from pathlib import Path
 
-# ==========================================
-# 1. PROJECT CONFIGURATION
-# ==========================================
-
 BASE_DIR = Path(__file__).resolve().parents[2]
 
 DATA_PATH = BASE_DIR / "data/raw/DataCoSupplyChainDataset.csv"
@@ -18,19 +14,11 @@ print("SHIPPING PERFORMANCE VALIDATION")
 print("==================================\n")
 
 
-# ==========================================
-# 2. LOAD DATASET
-# ==========================================
-
 df = pd.read_csv(DATA_PATH, encoding="latin1")
 
 print("Dataset loaded successfully!")
 print("Original records:", len(df))
 
-
-# ==========================================
-# 3. AGGREGATE AT ORDER LEVEL
-# ==========================================
 
 order_df = (
     df.groupby("Order Id")
@@ -48,9 +36,6 @@ print("\nORDER LEVEL INFORMATION")
 print("Total unique orders:", len(order_df))
 
 
-# ==========================================
-# 4. EXCLUDE CANCELLED SHIPMENTS
-# ==========================================
 
 valid_orders = order_df[
     order_df["Delivery_Status"] != "Shipping canceled"
@@ -61,10 +46,6 @@ print("Cancelled shipments excluded:",
 
 print("Eligible shipments:", len(valid_orders))
 
-
-# ==========================================
-# 5. CALCULATE DELIVERY DELAYS
-# ==========================================
 
 valid_orders["Delay_Days"] = (
     valid_orders["Actual_Days"]
@@ -80,9 +61,6 @@ valid_orders["Is_Delayed"] = (
 )
 
 
-# ==========================================
-# 6. SHIPPING MODE PERFORMANCE
-# ==========================================
 
 shipping_analysis = (
     valid_orders.groupby("Shipping_Mode")
@@ -109,10 +87,6 @@ shipping_analysis.to_csv(
 )
 
 
-# ==========================================
-# 7. SCHEDULED VS ACTUAL DURATION
-# ==========================================
-
 duration_comparison = pd.crosstab(
     valid_orders["Shipping_Mode"],
     [
@@ -130,12 +104,6 @@ duration_comparison.to_csv(
 )
 
 
-# ==========================================
-# 8. DELIVERY STATUS VALIDATION
-# ==========================================
-
-# Derive delivery status independently from delay
-
 valid_orders["Calculated_Status"] = valid_orders[
     "Delay_Days"
 ].apply(
@@ -146,7 +114,6 @@ valid_orders["Calculated_Status"] = valid_orders[
     )
 )
 
-# Compare original labels with calculated labels
 
 status_validation = pd.crosstab(
     valid_orders["Delivery_Status"],
@@ -162,9 +129,6 @@ status_validation.to_csv(
 )
 
 
-# ==========================================
-# 9. LABEL MISMATCH ANALYSIS
-# ==========================================
 
 valid_orders["Label_Mismatch"] = (
     valid_orders["Delivery_Status"]
@@ -190,7 +154,6 @@ print("Mismatch percentage:",
       round(mismatch_percentage, 2), "%")
 
 
-# Save mismatched records for investigation
 
 mismatched_orders = valid_orders[
     valid_orders["Label_Mismatch"]
@@ -201,10 +164,6 @@ mismatched_orders.to_csv(
     index=False
 )
 
-
-# ==========================================
-# 10. DELAY DISTRIBUTION
-# ==========================================
 
 delay_distribution = (
     valid_orders["Delay_Hours"]
@@ -224,9 +183,6 @@ delay_distribution.to_csv(
 )
 
 
-# ==========================================
-# 11. FINAL SUMMARY
-# ==========================================
 
 print("\n==================================")
 print("SHIPPULSE AI - VALIDATION COMPLETED")

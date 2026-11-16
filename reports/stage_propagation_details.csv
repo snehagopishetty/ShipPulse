@@ -1,0 +1,36 @@
+Scenario,Stage,Planned_Duration_Hours,Buffer_Hours,Incoming_Delay_Hours,Absorbed_Delay_Hours,Residual_Upstream_Delay_Hours,Local_Disruption_Hours,Outgoing_Delay_Hours
+Baseline,Order Processing,9.54,2.0,0.0,0.0,0.0,0.0,0.0
+Baseline,Warehouse Handling,19.09,3.0,0.0,0.0,0.0,0.0,0.0
+Baseline,Carrier Transit,38.17,4.0,0.0,0.0,0.0,0.0,0.0
+Baseline,Destination Handling,14.31,2.0,0.0,0.0,0.0,0.0,0.0
+Baseline,Final-Mile Delivery,14.31,1.0,0.0,0.0,0.0,0.0,0.0
+Order Processing Delay,Order Processing,9.54,2.0,0.0,0.0,0.0,8.0,8.0
+Order Processing Delay,Warehouse Handling,19.09,3.0,8.0,3.0,5.0,0.0,5.0
+Order Processing Delay,Carrier Transit,38.17,4.0,5.0,4.0,1.0,0.0,1.0
+Order Processing Delay,Destination Handling,14.31,2.0,1.0,1.0,0.0,0.0,0.0
+Order Processing Delay,Final-Mile Delivery,14.31,1.0,0.0,0.0,0.0,0.0,0.0
+Warehouse Delay,Order Processing,9.54,2.0,0.0,0.0,0.0,0.0,0.0
+Warehouse Delay,Warehouse Handling,19.09,3.0,0.0,0.0,0.0,12.0,12.0
+Warehouse Delay,Carrier Transit,38.17,4.0,12.0,4.0,8.0,0.0,8.0
+Warehouse Delay,Destination Handling,14.31,2.0,8.0,2.0,6.0,0.0,6.0
+Warehouse Delay,Final-Mile Delivery,14.31,1.0,6.0,1.0,5.0,0.0,5.0
+Carrier Disruption,Order Processing,9.54,2.0,0.0,0.0,0.0,0.0,0.0
+Carrier Disruption,Warehouse Handling,19.09,3.0,0.0,0.0,0.0,0.0,0.0
+Carrier Disruption,Carrier Transit,38.17,4.0,0.0,0.0,0.0,24.0,24.0
+Carrier Disruption,Destination Handling,14.31,2.0,24.0,2.0,22.0,0.0,22.0
+Carrier Disruption,Final-Mile Delivery,14.31,1.0,22.0,1.0,21.0,0.0,21.0
+Destination Delay,Order Processing,9.54,2.0,0.0,0.0,0.0,0.0,0.0
+Destination Delay,Warehouse Handling,19.09,3.0,0.0,0.0,0.0,0.0,0.0
+Destination Delay,Carrier Transit,38.17,4.0,0.0,0.0,0.0,0.0,0.0
+Destination Delay,Destination Handling,14.31,2.0,0.0,0.0,0.0,12.0,12.0
+Destination Delay,Final-Mile Delivery,14.31,1.0,12.0,1.0,11.0,0.0,11.0
+Final Mile Delay,Order Processing,9.54,2.0,0.0,0.0,0.0,0.0,0.0
+Final Mile Delay,Warehouse Handling,19.09,3.0,0.0,0.0,0.0,0.0,0.0
+Final Mile Delay,Carrier Transit,38.17,4.0,0.0,0.0,0.0,0.0,0.0
+Final Mile Delay,Destination Handling,14.31,2.0,0.0,0.0,0.0,0.0,0.0
+Final Mile Delay,Final-Mile Delivery,14.31,1.0,0.0,0.0,0.0,6.0,6.0
+Multiple Disruptions,Order Processing,9.54,2.0,0.0,0.0,0.0,0.0,0.0
+Multiple Disruptions,Warehouse Handling,19.09,3.0,0.0,0.0,0.0,12.0,12.0
+Multiple Disruptions,Carrier Transit,38.17,4.0,12.0,4.0,8.0,24.0,32.0
+Multiple Disruptions,Destination Handling,14.31,2.0,32.0,2.0,30.0,12.0,42.0
+Multiple Disruptions,Final-Mile Delivery,14.31,1.0,42.0,1.0,41.0,0.0,41.0

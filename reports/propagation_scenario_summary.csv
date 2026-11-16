@@ -1,0 +1,8 @@
+Order_Id,Scenario,ML_Predicted_ETA_Days,Additional_Delay_Hours,Revised_ETA_Days,Revised_ETA_Hours
+63095,Baseline,3.98,0.0,3.98,95.43
+63095,Order Processing Delay,3.98,0.0,3.98,95.43
+63095,Warehouse Delay,3.98,5.0,4.18,100.43
+63095,Carrier Disruption,3.98,21.0,4.85,116.43
+63095,Destination Delay,3.98,11.0,4.43,106.43
+63095,Final Mile Delay,3.98,6.0,4.23,101.43
+63095,Multiple Disruptions,3.98,41.0,5.68,136.43

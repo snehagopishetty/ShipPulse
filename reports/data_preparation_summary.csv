@@ -1,0 +1,9 @@
+Metric,Value
+Original orders,65752
+Cancelled orders excluded,2855
+Invalid order dates,0
+Invalid numeric rows,0
+Final modelling records,62897
+Number of input features,14
+Delayed orders,36048
+Not delayed orders,26849

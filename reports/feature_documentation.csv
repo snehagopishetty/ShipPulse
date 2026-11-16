@@ -1,0 +1,15 @@
+Feature,Description,Feature_Type,Available_At_Prediction
+Shipping_Mode,Selected shipping service at order placement,Categorical,Yes
+Market,Geographical market,Categorical,Yes
+Order_Region,Destination region,Categorical,Yes
+Order_Country,Destination country,Categorical,Yes
+Customer_Segment,Customer segment,Categorical,Yes
+Scheduled_Days,Scheduled shipping duration in days,Numerical,Yes
+Order_Year,Year of order placement,Numerical,Yes
+Order_Month,Month of order placement,Numerical,Yes
+Order_DayOfWeek,Day of week of order placement (Monday=0),Numerical,Yes
+Order_Day,Day of month of order placement,Numerical,Yes
+Is_Weekend,Whether the order was placed on a weekend,Binary,Yes
+Total_Quantity,Total quantity across all order items,Numerical,Yes
+Total_Order_Value,Aggregated monetary value of order items,Numerical,Yes
+Number_Of_Items,Number of order-item records,Numerical,Yes
